@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcask-normalizer
+spec:
+  selector:
+    matchLabels:
+      app: bitcask-normalizer
+  template:
+    metadata:
+      labels:
+        app: bitcask-normalizer
+    spec:
+      containers:
+      - name: bitcask-normalizer
+        image: bitcask-normalizer:latest
+        imagePullPolicy: Never
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "kafka:9092"
+        - name: KAFKA_TOPIC
+          value: "weather-station"
+        - name: BITCASK_SERVER_HOST
+          value: "bitcask"
+        - name: BITCASK_SERVER_PORT
+          value: "5000"
+
+
