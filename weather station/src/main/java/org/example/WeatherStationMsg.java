@@ -1,5 +1,7 @@
 package org.example;
 
+import java.time.Instant;
+
 public class WeatherStationMsg {
     private long station_id;
     private long s_no;//auto increment
@@ -11,7 +13,7 @@ public class WeatherStationMsg {
         this.station_id = stationId;
         this.s_no = s_no;
         this.battery_status = batteryStatus;
-        this.status_timestamp = System.currentTimeMillis();
+        this.status_timestamp = Instant.now().getEpochSecond();
         this.weather = weatherData;
     }
 

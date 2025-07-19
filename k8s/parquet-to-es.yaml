@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: parquet-to-elastic
+spec:
+
+  schedule: "0 * * * *" # Runs every half an hour 
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: parquet-to-elastic
+            image: parquet-to-es:latest
+            imagePullPolicy: Never
+            env:
+            - name: PARQUET_DIR
+              value: "/app/weather-data"
+            - name: PROCESSED_FILES
+              value: "/app/out/processed_files.txt"
+            - name: ELASTIC_HOST
+              value: "elasticsearch" # Elasticsearch service name
+            - name: ELASTIC_PORT
+              value: "9200"
+            - name: ELASTIC_INDEX
+              value: "weather_stations_metrics"
+            volumeMounts:
+            - name: parquet-data
+              mountPath: "/app/weather-data"
+            - name: processed-files
+              mountPath: "/app/out"
+          restartPolicy: OnFailure
+          volumes:
+          - name: parquet-data
+            persistentVolumeClaim:
+              claimName: parquet-data-pvc
+          - name: processed-files
+            persistentVolumeClaim:
+              claimName: processed-files-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: processed-files-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi # Adjust size as needed
+  storageClassName: standard
+---

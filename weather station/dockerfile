@@ -1,0 +1,10 @@
+FROM eclipse-temurin:21-jdk
+
+# Copy your JAR file
+COPY target/weather_station-1.0-SNAPSHOT-jar-with-dependencies.jar /app/your-app.jar
+
+# Set working directory
+WORKDIR /app
+
+# Run the JAR (adjust entrypoint if needed)
+ENTRYPOINT ["java", "-jar", "your-app.jar" , "1"]

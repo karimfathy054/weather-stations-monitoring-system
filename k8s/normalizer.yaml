@@ -15,13 +15,6 @@ spec:
       - name: bitcask-normalizer
         image: bitcask-normalizer:latest
         imagePullPolicy: Never
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "500m"
-          limits:
-            memory: "1Gi"
-            cpu: "1000m"
         env:
         - name: KAFKA_BOOTSTRAP_SERVERS
           value: "kafka:9092"

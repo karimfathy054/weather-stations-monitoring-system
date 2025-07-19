@@ -1,0 +1,5 @@
+kibana:
+    http://localhost:5601
+
+ElasticSearch:
+    http://localhost:9200

@@ -17,20 +17,36 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
 
-        long stationId = args[0] != null ? Long.parseLong(args[0]) : 1;
+        long stationId = args.length > 0 ? Long.parseLong(args[0]) : 1;
         //fixme: load last message counter from db
         long statusMsgCounter = 0;
 
+        // Read Kafka configuration from environment variables with defaults
+        String bootstrapServers = System.getenv("KAFKA_BOOTSTRAP_SERVERS");
+        if (bootstrapServers == null || bootstrapServers.isEmpty()) {
+            bootstrapServers = "kafka:9092"; // Default to Kubernetes service name
+        }
+        
         Properties props = new Properties();
-        props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,"localhost:9092");
+        props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        
+        // Add reliability configurations
+        props.setProperty(ProducerConfig.ACKS_CONFIG, "all");
+        props.setProperty(ProducerConfig.RETRIES_CONFIG, "10");
+        props.setProperty(ProducerConfig.RETRY_BACKOFF_MS_CONFIG, "1000");
+        props.setProperty(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "1");
+        
+        System.out.println("Connecting to Kafka at: " + bootstrapServers);
 
         ObjectMapper objectMapper = new ObjectMapper();
         try(Producer<String,String> producer = new KafkaProducer<>(props)){
+            System.out.println("Weather station " + stationId + " started. Sending data to Kafka...");
 
             while(true){
                 if (dropMsg()){
+                    statusMsgCounter++;
                     System.out.println("Message dropped");
                     continue;
                 }
@@ -51,9 +67,13 @@ public class Main {
                 }
                 Thread.sleep(1000);
             }
+        } catch (Exception e) {
+            System.err.println("Fatal error connecting to Kafka: " + e.getMessage());
+            e.printStackTrace();
+            // Wait before attempting restart (in case this is in a Kubernetes restart loop)
+            Thread.sleep(5000);
+            throw e;
         }
-
-
     }
     private static boolean dropMsg(){
         return rand.nextInt(100) < 10; // 10% chance to drop the message

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcask
+  labels:
+    app: bitcask
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bitcask
+  template:
+    metadata:
+      labels:
+        app: bitcask
+    spec:
+      containers:
+      - name: bitcask
+        image: bitcask:latest
+        volumeMounts:
+        - mountPath: "/data"
+          name: bitcask-storage
+      volumes:
+      - name: bitcask-storage
+        persistentVolumeClaim:
+          claimName: bitcask-pvc

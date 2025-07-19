@@ -23,13 +23,6 @@ spec:
       - name: bitcask
         image: bitcask:latest
         imagePullPolicy: Never
-        resources:
-          requests:
-            memory: "1Gi"
-            cpu: "1000m"
-          limits:
-            memory: "2Gi"
-            cpu: "2000m"
         ports:
         - containerPort: 5000
         volumeMounts:
@@ -49,7 +42,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 1Gi
   storageClassName: standard
 ---
 apiVersion: v1

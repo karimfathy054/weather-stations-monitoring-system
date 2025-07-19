@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: parquet-maker
+spec:
+  selector:
+    matchLabels:
+      app: parquet-maker
+  template:
+    metadata:
+      labels:
+        app: parquet-maker
+    spec:
+      initContainers:
+      - name: init-parquet-maker
+        image: busybox
+        command: ['sh', '-c', 'until ls -la /app/output; do echo "Waiting for persistent storage to be ready..."; sleep 2; done;']
+        volumeMounts:
+        - name: parquet-data
+          mountPath: /app/output
+      containers:
+      - name: parquet-maker
+        image: parquet-maker:latest
+        imagePullPolicy: Never
+        env:
+        - name: BOOTSTRAP_SERVER
+          value: "kafka:9092"
+        - name: TOPIC
+          value: "weather-station"
+        - name: OUTPUT_DIR
+          value: "/app/output"
+        - name: MAX_FILE_SIZE_MB
+          value: "1"
+        - name: BATCH_SIZE
+          value: "1000"
+        volumeMounts:
+        - name: parquet-data
+          mountPath: /app/output
+      # - name: parquet-to-csv
+      #   image: parquet-to-csv:latest
+      #   imagePullPolicy: Never
+      #   env:
+      #   - name: INPUT_DIR
+      #     value: "/app/output"
+      #   - name: OUTPUT_DIR
+      #     value: "/app/csv_output"
+      #   - name: PROCESSED_DIR
+      #     value: "/app/processed"
+      #   - name: ERROR_DIR
+      #     value: "/app/error"
+      #   - name: SLEEP_INTERVAL
+      #     value: "1800"
+      #   volumeMounts:
+      #   - name: parquet-data
+      #     mountPath: "/app/output"
+      #     readOnly: true
+      #   - name: csv-analytics-data
+      #     mountPath: "/app/csv_output"
+      #   - name: processed-data
+      #     mountPath: "/app/processed"
+      #   - name: error-data
+      #     mountPath: "/app/error"
+      volumes:
+      - name: parquet-data
+        persistentVolumeClaim:
+          claimName: parquet-data-pvc
+      # - name: csv-analytics-data
+      #   persistentVolumeClaim:
+      #     claimName: csv-analytics-pvc
+      # - name: processed-data
+      #   emptyDir: {}
+      # - name: error-data
+      #   emptyDir: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: parquet-data-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard
+---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: csv-analytics-pvc
+# spec:
+#   accessModes:
+#   - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 10Gi
+#   storageClassName: standard
+---

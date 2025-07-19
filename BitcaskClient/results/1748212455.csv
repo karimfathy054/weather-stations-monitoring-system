@@ -1,0 +1,12 @@
+Key,Value
+1,{"station_id":1;"s_no":245;"battery_status":"MEDIUM";"status_timestamp":1748212454;"weather":{"humidity":84;"temperature":93;"wind_speed":21}}
+2,{"station_id":2;"s_no":247;"battery_status":"LOW";"status_timestamp":1748212455;"weather":{"humidity":19;"temperature":77;"wind_speed":20}}
+3,{"station_id":3;"s_no":239;"battery_status":"MEDIUM";"status_timestamp":1748212454;"weather":{"humidity":65;"temperature":88;"wind_speed":22}}
+4,{"station_id":4;"s_no":252;"battery_status":"LOW";"status_timestamp":1748212455;"weather":{"humidity":90;"temperature":70;"wind_speed":25}}
+5,{"station_id":5;"s_no":238;"battery_status":"LOW";"status_timestamp":1748212455;"weather":{"humidity":55;"temperature":68;"wind_speed":16}}
+6,{"station_id":6;"s_no":238;"battery_status":"MEDIUM";"status_timestamp":1748212454;"weather":{"humidity":9;"temperature":71;"wind_speed":6}}
+7,{"station_id":7;"s_no":232;"battery_status":"MEDIUM";"status_timestamp":1748212454;"weather":{"humidity":30;"temperature":89;"wind_speed":10}}
+8,{"station_id":8;"s_no":226;"battery_status":"HIGH";"status_timestamp":1748212454;"weather":{"humidity":34;"temperature":52;"wind_speed":19}}
+9,{"station_id":9;"s_no":250;"battery_status":"LOW";"status_timestamp":1748212455;"weather":{"humidity":43;"temperature":79;"wind_speed":23}}
+10,{"station_id":10;"s_no":232;"battery_status":"MEDIUM";"status_timestamp":1748212455;"weather":{"humidity":99;"temperature":51;"wind_speed":14}}
+
