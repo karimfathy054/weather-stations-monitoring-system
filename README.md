@@ -97,4 +97,4 @@ The Elasticsearch pod acts as a durable subscriber to weather data summaries wri
 
 ---
 
-for JFR profiling and more details please refere to the project report and assignment pdf
+for JFR profiling and more details please refere to the [project report](docs/DDIA_Project_report.pdf) and [assignment pdf](docs/Project_assignment.pdf)
